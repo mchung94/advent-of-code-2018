@@ -4,10 +4,9 @@
 
 (defun coordinates (left top width height)
   "Return a list of X, Y coordinates covering the given rectangle."
-  (let ((coords ()))
-    (dotimes (y height coords)
-      (dotimes (x width)
-        (push (cons (+ x left) (+ y top)) coords)))))
+  (loop for y from top below (+ top height)
+        nconc (loop for x from left below (+ left width)
+                    collect (cons x y))))
 
 (defun create-claim (string)
   "Return a claim given a claim string like '#1 @ 1,3: 4x4'."
