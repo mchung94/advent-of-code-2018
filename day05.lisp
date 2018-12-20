@@ -5,7 +5,7 @@
 
 (defun reactablep (unit1 unit2)
   "Return T if the two units can react and destroy each other."
-  (and (char= (char-upcase unit1) (char-upcase unit2))
+  (and (char-equal unit1 unit2)
        (char/= unit1 unit2)))
 
 (defun react (polymer)
