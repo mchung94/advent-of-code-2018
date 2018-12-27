@@ -1,9 +1,17 @@
+(defun parse-timestamp (string)
+  "Return a date string as an integer.
+We just need to be able to sort by timestamp and get the minute."
+  (parse-integer
+   (remove-if (complement #'digit-char-p)
+	      (subseq string (1+ (position #\[ string)) (position #\] string)))))
+
+(defun minute (timestamp)
+  "Return the minute from a timestamp value."
+  (rem timestamp 100))
+  
 (defun parse-record (string)
   "Given a record string, return a cons containing timestamp and event message."
-  (flet ((int (start &optional (length 2))
-           (parse-integer string :start start :end (+ start length))))
-    (cons (encode-universal-time 0 (int 15) (int 12) (int 9) (int 6) (int 1 4))
-          (subseq string 19))))
+  (cons (parse-timestamp string) (subseq string 19)))
 
 (defun read-input (&optional (filename "input/day04.txt"))
   "Return a list of the records in the file."
@@ -17,10 +25,6 @@
   (let* ((start (1+ (position #\# event-description)))
          (end (position #\space event-description :start start)))
     (parse-integer event-description :start start :end end)))
-
-(defun minute (universal-time)
-  "Return the minute from a universal time value."
-  (nth-value 1 (decode-universal-time universal-time)))
 
 (defun nap-chart (records)
   "Return an alist collecting the minutes each guard was asleep.
@@ -40,11 +44,17 @@ showing how many times the guard was asleep at that minute."
                     (setf data (acons guard
                                       (make-array 60 :initial-element 0)
                                       data)))))
-        finally return data))
+        finally (return data)))
 
 (defun sleepiest-guard (naps)
   "Return the guard ID of the guard that slept the longest total time."
-  (car (first (sort naps #'> :key (lambda (c) (reduce #'+ (cdr c)))))))
+  (loop with sleepiest-guard-id = (car (first naps))
+     with sleepiest-time = (reduce #'+ (cdr (first naps)))
+     for (guard-id . minutes) in (rest naps)
+     for sum-minutes = (reduce #'+ minutes)
+     when (> sum-minutes sleepiest-time)
+     do (setf sleepiest-guard-id guard-id sleepiest-time sum-minutes)
+     finally (return sleepiest-guard-id)))
 
 (defun sleepiest-minute (minutes)
   "Return the minute that the guard was asleep most."
@@ -62,9 +72,15 @@ showing how many times the guard was asleep at that minute."
   (strategy1 (read-input)))
 
 (defun guard-with-sleepiest-minute (naps)
-  "Return the ID and minutenaps of the guard which is most frequently asleep on the
+  "Return the ID and minute naps of the guard which is most frequently asleep on the
 same minute."
-  (first (sort naps #'> :key (lambda (c) (reduce #'max (cdr c))))))
+  (loop with sleepiest-guard-id = (car (first naps))
+     with sleepiest-minute = (reduce #'max (cdr (first naps)))
+     for (guard-id . minutes) in (rest naps)
+     for max-minute = (reduce #'max minutes)
+     when (> max-minute sleepiest-minute)
+     do (setf sleepiest-guard-id guard-id sleepiest-minute max-minute)
+     finally (return (assoc sleepiest-guard-id naps))))
 
 (defun strategy2 (records)
   "Multiply the ID of the guard most frequently asleep on the same minute with

@@ -15,7 +15,7 @@
         do (if (and stack (reactablep unit (first stack)))
                (pop stack)
              (push unit stack))
-        finally return (nreverse (coerce stack 'string))))
+        finally (return (nreverse (coerce stack 'string)))))
 
 (defun part1 ()
   "Return the answer for Day 5, Part 1."

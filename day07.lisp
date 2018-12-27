@@ -16,7 +16,7 @@
         do (push prerequisite (gethash step graph))
         unless (gethash prerequisite graph)
         do (setf (gethash prerequisite graph) nil)
-        finally return graph))
+        finally (return graph)))
 
 (defun available-steps (graph completed-steps)
   "Return a list of the next steps that can be performed."
@@ -32,7 +32,7 @@
         for next = (sort (available-steps graph completed-steps) #'char<)
         until (null next)
         do (push (first next) completed-steps)
-        finally return (nreverse completed-steps)))
+        finally (return (nreverse completed-steps))))
 
 (defun part1 ()
   "Return the answer for Day 7, Part 1."
@@ -48,7 +48,7 @@ Update the work hashtable and return the number of seconds passed."
   (loop with min-time = (loop for v being the hash-values in work minimize v)
         for step being the hash-keys in work
         do (decf (gethash step work) min-time)
-        finally return min-time))
+        finally (return min-time)))
 
 (defun completed-work (work)
   "Return all the work items finished and remove them from the work hash table."
@@ -76,7 +76,7 @@ Update the work hashtable and return the number of seconds passed."
         (assign-work work num-workers steps step-prep-seconds)
         (incf elapsed-time (advance-time work))
         (setf completed-steps (nconc (completed-work work) completed-steps))
-        finally return elapsed-time))
+        finally (return elapsed-time)))
 
 (defun part2 ()
   "Return the answer for Day 7, Part 2."

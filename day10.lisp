@@ -58,9 +58,9 @@
   (loop with points-copy = (mapcar #'copy-point points)
         for seconds from 0
         while (>= (area points-copy) (area (move-points points-copy 1)))
-        finally return (progn
-                         (print-points (move-points points-copy -1))
-                         seconds)))
+        finally (return (progn
+			  (print-points (move-points points-copy -1))
+			  seconds))))
 
 (defun part1and2 ()
   "Print the answer for Day 10, Part 1, and return the answer for Part 2."

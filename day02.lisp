@@ -12,7 +12,7 @@
         do (if (gethash letter counts)
                (incf (gethash letter counts))
              (setf (gethash letter counts) 1))
-        finally return counts))
+        finally (return counts)))
 
 (defun checksum (box-ids)
   "Return the checksum of the given box IDs."
@@ -21,7 +21,7 @@
                            collect v)
         counting (member 2 counts) into twos
         counting (member 3 counts) into threes
-        finally return (* twos threes)))
+        finally (return (* twos threes))))
 
 (defun part1 ()
   "Return the answer for Day 2, Part 1."

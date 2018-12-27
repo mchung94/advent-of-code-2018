@@ -53,7 +53,7 @@
                     (setf (node-next (node-prev new-node)) new-node
                           (node-prev (node-next new-node)) new-node
                           current-node new-node))))
-        finally return scores))
+        finally (return scores)))
 
 (defun highest-score (num-players last-marble)
   "Return the highest score after finishing the marble game."

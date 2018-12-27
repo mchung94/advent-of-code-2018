@@ -46,7 +46,7 @@
         for p in (all-points left right top bottom)
         for closest-target = (closest-target p targets)
         do (push p (gethash closest-target target->points))
-        finally return target->points))
+        finally (return target->points)))
 
 (defun largest-finite-area (targets)
   "Return the size of the largest finite area closest to a target."
